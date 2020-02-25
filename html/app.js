@@ -10,9 +10,23 @@ const end = second.querySelector("h1");
 const controller = new ScrollMagic.Controller();
 
 const scene = new ScrollMagic.Scene({
-  duration: 1000,
+  duration: 2000,
   triggerElement: first,
   triggerHook: 0
 })
   .addIndicators()
+  .setPin(first)
   .addTo(controller);
+
+let accelAmount = 0.1;
+let scrollPos = 0;
+let delay = 0;
+
+scene.on("update", e => {
+  scrollPos = e.scrollPos / 1000;
+});
+
+setInterval(() => {
+  delay += (scrollPos - delay) * accelAmount;
+  video.currentTime = delay;
+}, 166);
