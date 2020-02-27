@@ -1,7 +1,10 @@
 import React, { useRef, useEffect } from "react";
 import "../styles/App.scss";
-import ScrollMagic from "scrollmagic";
-import { gsap } from "gsap";
+import * as ScrollMagic from "scrollmagic"; // Or use scrollmagic-with-ssr to avoid server rendering problems
+import { TweenMax, TimelineMax, gsap } from "gsap"; // Also works with TweenLite and TimelineLite
+import { ScrollMagicPluginGsap } from "scrollmagic-plugin-gsap";
+
+ScrollMagicPluginGsap(ScrollMagic, TweenMax, TimelineMax);
 
 const App = () => {
   const first = useRef(null);
@@ -14,24 +17,30 @@ const App = () => {
     let controller = new ScrollMagic.Controller();
     let scene1 = new ScrollMagic.Scene({
       duration: 2000,
-      triggerElement: first,
+      triggerElement: first.current,
       triggerHook: 0
     })
       .addIndicators()
       .setPin(first.current)
       .addTo(controller);
 
-    const textAnim = gsap.to(h1text.current, { opacity: 0, duration: 1 });
+    let textAnim = gsap.fromTo(
+      h1text.current,
+      1,
+      { opacity: 1 },
+      { opacity: 0 }
+    );
 
     let scene2 = new ScrollMagic.Scene({
       duration: 1000,
-      triggerElement: first,
+      offset: 200,
+      triggerElement: first.current,
       triggerHook: 0
     })
       .setTween(textAnim)
       .addTo(controller);
 
-    let accelAmount = 0.1;
+    let accelAmount = 0.5;
     let scrollPos = 0;
     let delay = 0;
 
@@ -41,20 +50,20 @@ const App = () => {
 
     setInterval(() => {
       delay += (scrollPos - delay) * accelAmount;
-      video.current.currentTime = scrollPos;
+      video.current.currentTime = delay;
     }, 166);
-  }, [h1text]);
+  }, []);
 
   return (
     <div>
-      <section ref={first} class="first">
+      <section ref={first} className="first">
         <h1 ref={h1text}>The Big Title of the Page</h1>
         <video ref={video} src="/video/IMG_0763.mp4"></video>
       </section>
-      <section ref={second} class="second">
+      <section ref={second} className="second">
         <h1>The Second Section</h1>
       </section>
-      <section ref={third} class="third">
+      <section ref={third} className="third">
         <h1>The Third Section</h1>
       </section>
     </div>
