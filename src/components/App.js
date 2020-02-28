@@ -11,7 +11,8 @@ const App = () => {
   const scrollVid = useRef(null);
   const parallax = useRef(null);
   const video = useRef(null);
-  const h1text = useRef(null);
+  const h1text1 = useRef(null);
+  const h1text2 = useRef(null);
   const background = useRef(null);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ const App = () => {
     let delay = 0;
 
     //SCENE 1 Video
-    let scene1 = new ScrollMagic.Scene({
+    let sceneVideo = new ScrollMagic.Scene({
       duration: 2000,
       triggerElement: scrollVid.current,
       triggerHook: 0
@@ -31,7 +32,7 @@ const App = () => {
       .setPin(scrollVid.current)
       .addTo(controller);
 
-    scene1.on("update", e => {
+    sceneVideo.on("update", e => {
       scrollPos = e.scrollPos / 1000;
     });
     setInterval(() => {
@@ -39,25 +40,31 @@ const App = () => {
       video.current.currentTime = delay;
     }, 166);
 
+    let animation = new TimelineMax();
     //SCENE 2 TEXT ANIMATION
-    let scene2 = new ScrollMagic.Scene({
+    let sceneText1 = new ScrollMagic.Scene({
       duration: 1000,
-      offset: 200,
       triggerElement: scrollVid.current,
       triggerHook: 0
     })
-      .setTween(gsap.fromTo(h1text.current, 1, { opacity: 1 }, { opacity: 0 }))
+      .setTween(
+        animation
+          .to(h1text1.current, 1, { opacity: 1, y: "-20%" })
+          .to(h1text1.current, 1, { opacity: 0, y: "-50%", delay: 1 })
+          .to(h1text2.current, 1, { opacity: 1, y: "-20%", delay: 2 })
+          .to(h1text2.current, 1, { opacity: 0, y: "-50%", delay: 3 })
+      )
       .addTo(controller);
 
     //SCENE 3 PARALLAX
-    var scene3 = new ScrollMagic.Scene({
+    var sceneParallax = new ScrollMagic.Scene({
       triggerElement: parallax.current,
       triggerHook: 1,
       duration: "100%"
     })
       .setTween(
         gsap.from(background.current, 1, {
-          y: "-20%",
+          y: "-40%",
           autoAlpha: 0.3,
           ease: Power1.easeInOut
         })
@@ -68,7 +75,8 @@ const App = () => {
   return (
     <div>
       <section ref={scrollVid} className="scroll-vid">
-        <h1 ref={h1text}>Here is a scrolling video</h1>
+        <h1 ref={h1text1}>This is my daughter</h1>
+        <h1 ref={h1text2}>Her name is Ramona</h1>
         <video ref={video} src="/media/IMG_0763.mp4"></video>
       </section>
       <section className="gradient">
@@ -76,7 +84,7 @@ const App = () => {
       </section>
       <section ref={parallax} className="parallax">
         <div ref={background} className="background"></div>
-        <h1>The Second Section</h1>
+        <h1>This is my son Graham</h1>
       </section>
       <section className="gradient">
         <h1>Another beautiful gradient</h1>
